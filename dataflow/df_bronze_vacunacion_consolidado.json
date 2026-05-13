@@ -54,6 +54,9 @@
 				},
 				{
 					"name": "union2"
+				},
+				{
+					"name": "derivedColumn4"
 				}
 			],
 			"scriptLines": [
@@ -189,7 +192,30 @@
 				"select3 derive(origen_datos = \"SCZ\") ~> derivedColumn2",
 				"select2 derive(origen_datos = \"RURAL\") ~> derivedColumn3",
 				"derivedColumn1, derivedColumn2 union(byName: true)~> union1",
-				"union1, derivedColumn3 union(byName: true)~> union2"
+				"union1, derivedColumn3 union(byName: true)~> union2",
+				"union2 derive(fecha_vacunacion = coalesce(",
+				"    coalesce (",
+				"        toDate (fecha_vacunacion, 'yyyy-MM-dd'),",
+				"        toDate (fecha_vacunacion, 'dd/MM/yyyy'),",
+				"        toDate (fecha_vacunacion, 'MM-dd-yyyy'),",
+				"        toDate (fecha_vacunacion, 'yyyy/MM/dd'),",
+				"        toDate (fecha_vacunacion, 'dd-MMM-yyyy'),",
+				"        toDate (fecha_vacunacion, 'MMMM dd, yyyy'),",
+				"        toDate (fecha_vacunacion, \"dd 'de' MMMM 'de' yyyy\")",
+				"    ),",
+				"    toDate('1900-01-01', 'yyyy-MM-dd')",
+				"),",
+				"          dosis = toInteger(toDecimal(dosis, 10, 2)),",
+				"          temperatura_conservacion = toDecimal(temperatura_conservacion, 5, 2),",
+				"          genero = iif(",
+				"    in(['femenino', 'F', 'mujer', 'female'], lower(trim(genero))), ",
+				"    'Femenino', ",
+				"    iif(",
+				"        in(['masculino', 'M', 'hombre', 'male'], lower(trim(genero))), ",
+				"        'Masculino', ",
+				"        'No especificado'",
+				"    )",
+				")) ~> derivedColumn4"
 			]
 		}
 	}
