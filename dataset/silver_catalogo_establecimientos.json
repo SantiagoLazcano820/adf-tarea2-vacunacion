@@ -12,29 +12,32 @@
 		"type": "AzureSqlTable",
 		"schema": [
 			{
-				"name": "id_catalogo",
-				"type": "int",
-				"precision": 10
+				"name": "establecimiento_id",
+				"type": "varchar"
+			},
+			{
+				"name": "nombre_establecimiento",
+				"type": "varchar"
 			},
 			{
 				"name": "departamento",
 				"type": "varchar"
 			},
 			{
-				"name": "establecimiento",
+				"name": "municipio_id",
 				"type": "varchar"
 			},
 			{
-				"name": "tipo_establecimiento",
+				"name": "municipio_nombre",
 				"type": "varchar"
 			},
 			{
-				"name": "vacuna",
-				"type": "varchar"
+				"name": "tiene_cadena_frio",
+				"type": "bit"
 			},
 			{
-				"name": "tipo_vacuna",
-				"type": "varchar"
+				"name": "activo",
+				"type": "bit"
 			},
 			{
 				"name": "fecha_carga",
