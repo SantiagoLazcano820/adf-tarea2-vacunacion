@@ -24,7 +24,11 @@
 					"name": "sink1"
 				}
 			],
-			"transformations": [],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				}
+			],
 			"scriptLines": [
 				"source(output(",
 				"          fecha_key as integer,",
@@ -43,7 +47,8 @@
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     query: 'SELECT \\n    CAST(YEAR(fecha_vacunacion) * 10000 + MONTH(fecha_vacunacion) * 100 + DAY(fecha_vacunacion) AS INT) AS fecha_key,\\n    CAST(fecha_vacunacion AS DATE) AS fecha,\\n    DATEPART(WEEKDAY, fecha_vacunacion) AS dia_semana,\\n    DATENAME(WEEKDAY, fecha_vacunacion) AS nombre_dia,\\n    DAY(fecha_vacunacion) AS dia_mes,\\n    MONTH(fecha_vacunacion) AS mes,\\n    DATENAME(MONTH, fecha_vacunacion) AS nombre_mes,\\n    DATEPART(QUARTER, fecha_vacunacion) AS trimestre,\\n    YEAR(fecha_vacunacion) AS anio,\\n    CASE WHEN DATEPART(WEEKDAY, fecha_vacunacion) IN (6, 7) THEN 1 ELSE 0 END AS es_fin_semana\\nFROM silver.vacunaciones_consolidadas\\nWHERE fecha_vacunacion IS NOT NULL\\nGROUP BY fecha_vacunacion',",
 				"     format: 'query') ~> source1",
-				"source1 sink(allowSchemaDrift: true,",
+				"source1 derive(es_fin_semana = iif(     in(['si', 'true','1', 'yes'], lower(trim(toString(es_fin_semana)))), true(), false())) ~> derivedColumn1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
 				"          fecha_key as integer,",
@@ -61,6 +66,7 @@
 				"     insertable:true,",
 				"     updateable:false,",
 				"     upsertable:false,",
+				"     truncate:true,",
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
@@ -74,7 +80,8 @@
 				"          mes,",
 				"          nombre_mes,",
 				"          trimestre,",
-				"          anio",
+				"          anio,",
+				"          es_fin_semana",
 				"     )) ~> sink1"
 			]
 		}
