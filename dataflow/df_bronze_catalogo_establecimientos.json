@@ -22,7 +22,15 @@
 					"name": "source2"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "silver_catalogo_establecimientos",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
 			"transformations": [
 				{
 					"name": "select1"
@@ -32,6 +40,9 @@
 				},
 				{
 					"name": "lookup1"
+				},
+				{
+					"name": "select2"
 				}
 			],
 			"scriptLines": [
@@ -84,7 +95,48 @@
 				"derivedColumn1, source2 lookup(derivedColumn1@municipio_nombre == source2@municipio_nombre,",
 				"     multiple: false,",
 				"     pickup: 'any',",
-				"     broadcast: 'auto')~> lookup1"
+				"     broadcast: 'auto')~> lookup1",
+				"lookup1 select(mapColumn(",
+				"          establecimiento_id,",
+				"          nombre_establecimiento,",
+				"          departamento = select1@departamento,",
+				"          municipio_nombre = derivedColumn1@municipio_nombre,",
+				"          tiene_cadena_frio,",
+				"          activo,",
+				"          municipio_id",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"select2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          establecimiento_id as string,",
+				"          nombre_establecimiento as string,",
+				"          departamento as string,",
+				"          municipio_id as string,",
+				"          municipio_nombre as string,",
+				"          tiene_cadena_frio as boolean,",
+				"          activo as boolean,",
+				"          fecha_carga as timestamp",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          establecimiento_id,",
+				"          nombre_establecimiento,",
+				"          departamento,",
+				"          municipio_id,",
+				"          municipio_nombre,",
+				"          tiene_cadena_frio,",
+				"          activo",
+				"     )) ~> sink1"
 			]
 		}
 	}
