@@ -1,0 +1,41 @@
+{
+	"name": "df_gold_dim_tiempo",
+	"properties": {
+		"folder": {
+			"name": "gold"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "silver_vacunaciones_consolidadas",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [],
+			"transformations": [],
+			"scriptLines": [
+				"source(output(",
+				"          fecha_key as integer,",
+				"          fecha as date,",
+				"          dia_semana as integer,",
+				"          nombre_dia as string,",
+				"          dia_mes as integer,",
+				"          mes as integer,",
+				"          nombre_mes as string,",
+				"          trimestre as integer,",
+				"          anio as integer,",
+				"          es_fin_semana as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     query: 'SELECT \\n    CAST(YEAR(fecha_vacunacion) * 10000 + MONTH(fecha_vacunacion) * 100 + DAY(fecha_vacunacion) AS INT) AS fecha_key,\\n    CAST(fecha_vacunacion AS DATE) AS fecha,\\n    DATEPART(WEEKDAY, fecha_vacunacion) AS dia_semana,\\n    DATENAME(WEEKDAY, fecha_vacunacion) AS nombre_dia,\\n    DAY(fecha_vacunacion) AS dia_mes,\\n    MONTH(fecha_vacunacion) AS mes,\\n    DATENAME(MONTH, fecha_vacunacion) AS nombre_mes,\\n    DATEPART(QUARTER, fecha_vacunacion) AS trimestre,\\n    YEAR(fecha_vacunacion) AS anio,\\n    CASE WHEN DATEPART(WEEKDAY, fecha_vacunacion) IN (6, 7) THEN 1 ELSE 0 END AS es_fin_semana\\nFROM silver.vacunaciones_consolidadas\\nWHERE fecha_vacunacion IS NOT NULL\\nGROUP BY fecha_vacunacion',",
+				"     format: 'query') ~> source1"
+			]
+		}
+	}
+}

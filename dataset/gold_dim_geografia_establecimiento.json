@@ -1,0 +1,54 @@
+{
+	"name": "gold_dim_geografia_establecimiento",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "dw_vacunacion",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "gold"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "establecimiento_key",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "establecimiento_id",
+				"type": "varchar"
+			},
+			{
+				"name": "nombre_establecimiento",
+				"type": "varchar"
+			},
+			{
+				"name": "municipio",
+				"type": "varchar"
+			},
+			{
+				"name": "departamento",
+				"type": "varchar"
+			},
+			{
+				"name": "zona_geografica",
+				"type": "varchar"
+			},
+			{
+				"name": "poblacion_estimada",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "tiene_cadena_frio",
+				"type": "bit"
+			}
+		],
+		"typeProperties": {
+			"schema": "gold",
+			"table": "dim_geografia_establecimiento"
+		}
+	}
+}

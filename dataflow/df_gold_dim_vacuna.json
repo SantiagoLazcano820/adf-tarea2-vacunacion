@@ -1,0 +1,36 @@
+{
+	"name": "df_gold_dim_vacuna",
+	"properties": {
+		"folder": {
+			"name": "gold"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "silver_catalogo_vacunas",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [],
+			"transformations": [],
+			"scriptLines": [
+				"source(output(",
+				"          vacuna_id as string,",
+				"          vacuna_nombre as string,",
+				"          enfermedad_previene as string,",
+				"          via_administracion as string,",
+				"          es_esquema_regular as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     query: 'SELECT DISTINCT vacuna_id, vacuna_nombre, enfermedad_previene, via_administracion, CASE WHEN grupo_pai = \\'PAI Regular\\' THEN 1 ELSE 0 END AS es_esquema_regular FROM silver.cat_vacunas_pai WHERE vacuna_id IS NOT NULL',",
+				"     format: 'query') ~> source1"
+			]
+		}
+	}
+}

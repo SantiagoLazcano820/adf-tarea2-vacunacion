@@ -1,0 +1,33 @@
+{
+	"name": "df_gold_dim_paciente",
+	"properties": {
+		"folder": {
+			"name": "gold"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "silver_vacunaciones_consolidadas",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [],
+			"transformations": [],
+			"scriptLines": [
+				"source(output(",
+				"          paciente_id as string,",
+				"          genero as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     query: 'SELECT DISTINCT \\n    paciente_id,\\n    genero\\nFROM silver.vacunaciones_consolidadas \\nWHERE paciente_id IS NOT NULL',",
+				"     format: 'query') ~> source1"
+			]
+		}
+	}
+}
