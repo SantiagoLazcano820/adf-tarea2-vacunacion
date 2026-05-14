@@ -1,0 +1,75 @@
+{
+	"name": "df_gold_dim_geografia_establecimiento",
+	"properties": {
+		"folder": {
+			"name": "gold"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "silver_catalogo_establecimientos",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "gold_dim_geografia_establecimiento",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [],
+			"scriptLines": [
+				"source(output(",
+				"          establecimiento_id as string,",
+				"          nombre_establecimiento as string,",
+				"          municipio_nombre as string,",
+				"          departamento as string,",
+				"          zona_geografica as string,",
+				"          poblacion_estimada as integer,",
+				"          tiene_cadena_frio as boolean",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     query: 'SELECT DISTINCT \\n    e.establecimiento_id,\\n    e.nombre_establecimiento,\\n    e.municipio_nombre,\\n    e.departamento,\\n    d.zona_geografica,\\n    d.poblacion_depto_estimada AS poblacion_estimada,\\n    e.tiene_cadena_frio\\nFROM silver.cat_establecimientos e\\nLEFT JOIN silver.cat_departamentos d ON e.municipio_id = d.municipio_id\\nWHERE e.establecimiento_id IS NOT NULL',",
+				"     format: 'query') ~> source1",
+				"source1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          establecimiento_key as integer,",
+				"          establecimiento_id as string,",
+				"          nombre_establecimiento as string,",
+				"          municipio as string,",
+				"          departamento as string,",
+				"          zona_geografica as string,",
+				"          poblacion_estimada as integer,",
+				"          tiene_cadena_frio as boolean",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          establecimiento_id,",
+				"          nombre_establecimiento,",
+				"          municipio = municipio_nombre,",
+				"          departamento,",
+				"          zona_geografica,",
+				"          poblacion_estimada,",
+				"          tiene_cadena_frio",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}
