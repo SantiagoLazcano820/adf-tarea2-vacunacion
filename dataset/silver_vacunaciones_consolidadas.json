@@ -12,26 +12,31 @@
 		"type": "AzureSqlTable",
 		"schema": [
 			{
-				"name": "id_vacunacion",
-				"type": "int",
-				"precision": 10
+				"name": "id_transaccional_origen",
+				"type": "varchar"
 			},
 			{
 				"name": "fecha_vacunacion",
-				"type": "datetime",
-				"precision": 23,
-				"scale": 3
+				"type": "date"
 			},
 			{
-				"name": "departamento",
+				"name": "paciente_id",
 				"type": "varchar"
 			},
 			{
-				"name": "establecimiento",
+				"name": "vacuna_id",
 				"type": "varchar"
 			},
 			{
-				"name": "vacuna",
+				"name": "vacuna_nombre",
+				"type": "varchar"
+			},
+			{
+				"name": "establecimiento_id",
+				"type": "varchar"
+			},
+			{
+				"name": "establecimiento_nombre",
 				"type": "varchar"
 			},
 			{
@@ -40,13 +45,14 @@
 				"precision": 10
 			},
 			{
-				"name": "paciente_id",
+				"name": "lote_nro",
 				"type": "varchar"
 			},
 			{
-				"name": "edad",
-				"type": "int",
-				"precision": 10
+				"name": "temperatura_conservacion",
+				"type": "decimal",
+				"precision": 5,
+				"scale": 2
 			},
 			{
 				"name": "genero",

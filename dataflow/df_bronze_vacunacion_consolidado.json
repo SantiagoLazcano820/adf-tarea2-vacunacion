@@ -43,7 +43,15 @@
 					"name": "source5"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "silver_vacunaciones_consolidadas",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
 			"transformations": [
 				{
 					"name": "select1"
@@ -246,17 +254,18 @@
 				"derivedColumn1, derivedColumn2 union(byName: true)~> union1",
 				"union1, derivedColumn3 union(byName: true)~> union2",
 				"union2 derive(fecha_vacunacion = coalesce(",
-				"    coalesce (",
-				"        toDate (fecha_vacunacion, 'yyyy-MM-dd'),",
-				"        toDate (fecha_vacunacion, 'dd/MM/yyyy'),",
-				"        toDate (fecha_vacunacion, 'MM-dd-yyyy'),",
-				"        toDate (fecha_vacunacion, 'yyyy/MM/dd'),",
-				"        toDate (fecha_vacunacion, 'dd-MMM-yyyy'),",
-				"        toDate (fecha_vacunacion, 'MMMM dd, yyyy'),",
-				"        toDate (fecha_vacunacion, \"dd 'de' MMMM 'de' yyyy\")",
+				"    coalesce(",
+				"        toDate(fecha_vacunacion, 'yyyy-MM-dd'),",
+				"        toDate(fecha_vacunacion, 'dd/MM/yyyy'),",
+				"        toDate(fecha_vacunacion, 'MM-dd-yyyy'),",
+				"        toDate(fecha_vacunacion, 'yyyy/MM/dd'),",
+				"        toDate(fecha_vacunacion, 'dd-MMM-yyyy'),",
+				"        toDate(fecha_vacunacion, 'MMMM dd, yyyy'),",
+				"        toDate(fecha_vacunacion, \"dd 'de' MMMM 'de' yyyy\")",
 				"    ),",
 				"    toDate('1900-01-01', 'yyyy-MM-dd')",
-				"),",
+				")",
+				",",
 				"          dosis = toInteger(toDecimal(dosis, 10, 2)),",
 				"          temperatura_conservacion = toDecimal(temperatura_conservacion, 5, 2),",
 				"          genero = iif(",
@@ -293,7 +302,47 @@
 				"          establecimiento_id",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> select4"
+				"     skipDuplicateMapOutputs: true) ~> select4",
+				"select4 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          id_transaccional_origen as string,",
+				"          fecha_vacunacion as date,",
+				"          paciente_id as string,",
+				"          vacuna_id as string,",
+				"          vacuna_nombre as string,",
+				"          establecimiento_id as string,",
+				"          establecimiento_nombre as string,",
+				"          dosis as integer,",
+				"          lote_nro as string,",
+				"          temperatura_conservacion as decimal(5,2),",
+				"          genero as string,",
+				"          origen_datos as string,",
+				"          fecha_carga as timestamp",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          id_transaccional_origen,",
+				"          fecha_vacunacion,",
+				"          paciente_id,",
+				"          vacuna_id,",
+				"          vacuna_nombre,",
+				"          establecimiento_id,",
+				"          establecimiento_nombre,",
+				"          dosis,",
+				"          lote_nro,",
+				"          temperatura_conservacion,",
+				"          genero,",
+				"          origen_datos",
+				"     )) ~> sink1"
 			]
 		}
 	}
