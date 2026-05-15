@@ -5,6 +5,8 @@
 			{
 				"name": "Data flow1",
 				"type": "ExecuteDataFlow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Data flow4",
@@ -67,6 +69,8 @@
 			{
 				"name": "Data flow3",
 				"type": "ExecuteDataFlow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -91,6 +95,8 @@
 			{
 				"name": "Data flow4",
 				"type": "ExecuteDataFlow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Data flow2",

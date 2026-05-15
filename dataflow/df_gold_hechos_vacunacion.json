@@ -43,7 +43,15 @@
 					"name": "source5"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "gold_hechos_vacunacion",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
 			"transformations": [
 				{
 					"name": "lookup1"
@@ -56,6 +64,9 @@
 				},
 				{
 					"name": "lookup4"
+				},
+				{
+					"name": "select1"
 				}
 			],
 			"scriptLines": [
@@ -144,7 +155,53 @@
 				"lookup3, source5 lookup(fecha_vacunacion == fecha,",
 				"     multiple: false,",
 				"     pickup: 'any',",
-				"     broadcast: 'auto')~> lookup4"
+				"     broadcast: 'auto')~> lookup4",
+				"lookup4 select(mapColumn(",
+				"          id_transaccional_origen,",
+				"          dosis,",
+				"          lote_nro,",
+				"          temperatura_conservacion,",
+				"          origen_datos,",
+				"          paciente_key,",
+				"          establecimiento_key,",
+				"          fecha_key,",
+				"          vacuna_key",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          vacunacion_key as integer,",
+				"          fecha_key as integer,",
+				"          paciente_key as integer,",
+				"          vacuna_key as integer,",
+				"          establecimiento_key as integer,",
+				"          dosis as integer,",
+				"          temperatura_conservacion as decimal(5,2),",
+				"          lote_nro as string,",
+				"          id_transaccional_origen as string,",
+				"          origen_datos as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          fecha_key,",
+				"          paciente_key,",
+				"          vacuna_key,",
+				"          establecimiento_key,",
+				"          dosis,",
+				"          temperatura_conservacion,",
+				"          lote_nro,",
+				"          id_transaccional_origen,",
+				"          origen_datos",
+				"     )) ~> sink1"
 			]
 		}
 	}

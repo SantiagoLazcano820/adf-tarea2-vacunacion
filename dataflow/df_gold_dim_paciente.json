@@ -33,7 +33,7 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
-				"     query: 'SELECT DISTINCT \\n    paciente_id,\\n    genero\\nFROM silver.vacunaciones_consolidadas \\nWHERE paciente_id IS NOT NULL',",
+				"     query: 'SELECT \\n    paciente_id, \\n    MAX(genero) AS genero \\nFROM silver.vacunaciones_consolidadas \\nWHERE paciente_id IS NOT NULL\\nGROUP BY paciente_id',",
 				"     format: 'query') ~> source1",
 				"source1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",

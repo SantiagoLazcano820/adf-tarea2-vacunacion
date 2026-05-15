@@ -37,27 +37,22 @@
 				"precision": 10
 			},
 			{
-				"name": "dosis_aplicada",
+				"name": "dosis",
 				"type": "int",
 				"precision": 10
 			},
 			{
-				"name": "temperatura_registro",
+				"name": "temperatura_conservacion",
 				"type": "decimal",
 				"precision": 5,
 				"scale": 2
-			},
-			{
-				"name": "cantidad_aplicaciones",
-				"type": "int",
-				"precision": 10
 			},
 			{
 				"name": "lote_nro",
 				"type": "varchar"
 			},
 			{
-				"name": "id_transaccion_origen",
+				"name": "id_transaccional_origen",
 				"type": "varchar"
 			},
 			{
